@@ -1,3 +1,0 @@
-- name: Set timezone
-  community.windows.win_timezone:
-    timezone: "{{ win_timezone }}"
