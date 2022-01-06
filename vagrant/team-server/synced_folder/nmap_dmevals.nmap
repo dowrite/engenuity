@@ -1,0 +1,231 @@
+# Nmap 7.80 scan initiated Fri Dec 10 14:13:52 2021 as: nmap -Pn -O -sC -sV -n -oA nmap_dmevals 10.0.0.4-5 10.0.1.4-6
+Nmap scan report for 10.0.0.4
+Host is up (0.00095s latency).
+Not shown: 990 filtered ports
+PORT     STATE SERVICE       VERSION
+53/tcp   open  domain?
+| fingerprint-strings: 
+|   DNSVersionBindReqTCP: 
+|     version
+|_    bind
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds  Windows Server 2016 Standard Evaluation 14393 microsoft-ds (workgroup: ATTACKRANGE)
+464/tcp  open  kpasswd5?
+593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+636/tcp  open  tcpwrapped
+3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: attackrange.local, Site: Default-First-Site-Name)
+3269/tcp open  tcpwrapped
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: ATTACKRANGE
+|   NetBIOS_Domain_Name: ATTACKRANGE
+|   NetBIOS_Computer_Name: NEWYORK
+|   DNS_Domain_Name: attackrange.local
+|   DNS_Computer_Name: newyork.attackrange.local
+|   DNS_Tree_Name: attackrange.local
+|   Product_Version: 10.0.14393
+|_  System_Time: 2021-12-10T19:19:17+00:00
+| ssl-cert: Subject: commonName=newyork.attackrange.local
+| Not valid before: 2021-12-09T18:52:04
+|_Not valid after:  2022-06-10T18:52:04
+|_ssl-date: 2021-12-10T19:19:58+00:00; 0s from scanner time.
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port53-TCP:V=7.80%I=7%D=12/10%Time=61B3A7AE%P=x86_64-pc-linux-gnu%r(DNS
+SF:VersionBindReqTCP,20,"\0\x1e\0\x06\x81\x04\0\x01\0\0\0\0\0\0\x07version
+SF:\x04bind\0\0\x10\0\x03");
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: bridge|general purpose
+Running (JUST GUESSING): Oracle Virtualbox (96%), QEMU (92%)
+OS CPE: cpe:/o:oracle:virtualbox cpe:/a:qemu:qemu
+Aggressive OS guesses: Oracle Virtualbox (96%), QEMU user mode network gateway (92%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: Host: NEWYORK; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_nbstat: NetBIOS name: NEWYORK, NetBIOS user: <unknown>, NetBIOS MAC: 08:00:27:7a:f8:9b (Oracle VirtualBox virtual NIC)
+| smb-os-discovery: 
+|   OS: Windows Server 2016 Standard Evaluation 14393 (Windows Server 2016 Standard Evaluation 6.3)
+|   Computer name: newyork
+|   NetBIOS computer name: NEWYORK\x00
+|   Domain name: attackrange.local
+|   Forest name: attackrange.local
+|   FQDN: newyork.attackrange.local
+|_  System time: 2021-12-10T19:19:17+00:00
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: required
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled and required
+| smb2-time: 
+|   date: 2021-12-10T19:19:17
+|_  start_date: 2021-12-10T19:01:06
+
+Nmap scan report for 10.0.0.5
+Host is up (0.0022s latency).
+Not shown: 997 filtered ports
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+445/tcp  open  microsoft-ds  Microsoft Windows Server 2008 R2 - 2012 microsoft-ds
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: ATTACKRANGE
+|   NetBIOS_Domain_Name: ATTACKRANGE
+|   NetBIOS_Computer_Name: WAREHOUSE
+|   DNS_Domain_Name: attackrange.local
+|   DNS_Computer_Name: warehouse.attackrange.local
+|   DNS_Tree_Name: attackrange.local
+|   Product_Version: 10.0.14393
+|_  System_Time: 2021-12-10T19:19:17+00:00
+| ssl-cert: Subject: commonName=warehouse.attackrange.local
+| Not valid before: 2021-12-09T00:22:33
+|_Not valid after:  2022-06-10T00:22:33
+|_ssl-date: 2021-12-10T19:19:58+00:00; 0s from scanner time.
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: bridge|general purpose
+Running (JUST GUESSING): Oracle Virtualbox (96%), QEMU (92%)
+OS CPE: cpe:/o:oracle:virtualbox cpe:/a:qemu:qemu
+Aggressive OS guesses: Oracle Virtualbox (96%), QEMU user mode network gateway (92%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_smb-os-discovery: ERROR: Script execution failed (use -d to debug)
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2021-12-10T19:19:23
+|_  start_date: 2021-12-10T19:02:57
+
+Nmap scan report for 10.0.1.4
+Host is up (0.00067s latency).
+Not shown: 996 filtered ports
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds?
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: SCRANTON
+|   NetBIOS_Domain_Name: SCRANTON
+|   NetBIOS_Computer_Name: SCRANTON
+|   DNS_Domain_Name: scranton
+|   DNS_Computer_Name: scranton
+|   Product_Version: 10.0.17134
+|_  System_Time: 2021-12-10T19:19:16+00:00
+| ssl-cert: Subject: commonName=scranton
+| Not valid before: 2021-12-09T01:24:29
+|_Not valid after:  2022-06-10T01:24:29
+|_ssl-date: 2021-12-10T19:19:49+00:00; -9s from scanner time.
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: bridge|general purpose
+Running (JUST GUESSING): Oracle Virtualbox (96%), QEMU (92%)
+OS CPE: cpe:/o:oracle:virtualbox cpe:/a:qemu:qemu
+Aggressive OS guesses: Oracle Virtualbox (96%), QEMU user mode network gateway (92%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: -4s, deviation: 4s, median: -2s
+|_nbstat: NetBIOS name: SCRANTON, NetBIOS user: <unknown>, NetBIOS MAC: 08:00:27:73:79:26 (Oracle VirtualBox virtual NIC)
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2021-12-10T19:19:16
+|_  start_date: N/A
+
+Nmap scan report for 10.0.1.5
+Host is up (0.0014s latency).
+Not shown: 996 filtered ports
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds?
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: ATTACKRANGE
+|   NetBIOS_Domain_Name: ATTACKRANGE
+|   NetBIOS_Computer_Name: UTICA
+|   DNS_Domain_Name: attackrange.local
+|   DNS_Computer_Name: utica.attackrange.local
+|   DNS_Tree_Name: attackrange.local
+|   Product_Version: 10.0.17134
+|_  System_Time: 2021-12-10T19:19:18+00:00
+| ssl-cert: Subject: commonName=utica.attackrange.local
+| Not valid before: 2021-12-09T18:14:56
+|_Not valid after:  2022-06-10T18:14:56
+|_ssl-date: 2021-12-10T19:19:58+00:00; 0s from scanner time.
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: bridge|general purpose
+Running (JUST GUESSING): Oracle Virtualbox (96%), QEMU (92%)
+OS CPE: cpe:/o:oracle:virtualbox cpe:/a:qemu:qemu
+Aggressive OS guesses: Oracle Virtualbox (96%), QEMU user mode network gateway (92%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_nbstat: NetBIOS name: UTICA, NetBIOS user: <unknown>, NetBIOS MAC: 08:00:27:26:ba:68 (Oracle VirtualBox virtual NIC)
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2021-12-10T19:19:23
+|_  start_date: N/A
+
+Nmap scan report for 10.0.1.6
+Host is up (0.00064s latency).
+Not shown: 996 filtered ports
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds?
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: ATTACKRANGE
+|   NetBIOS_Domain_Name: ATTACKRANGE
+|   NetBIOS_Computer_Name: NASHUA
+|   DNS_Domain_Name: attackrange.local
+|   DNS_Computer_Name: nashua.attackrange.local
+|   DNS_Tree_Name: attackrange.local
+|   Product_Version: 10.0.17134
+|_  System_Time: 2021-12-10T19:19:18+00:00
+| ssl-cert: Subject: commonName=nashua.attackrange.local
+| Not valid before: 2021-12-09T18:27:04
+|_Not valid after:  2022-06-10T18:27:04
+|_ssl-date: 2021-12-10T19:19:58+00:00; 0s from scanner time.
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: bridge|general purpose
+Running (JUST GUESSING): Oracle Virtualbox (96%), QEMU (92%)
+OS CPE: cpe:/o:oracle:virtualbox cpe:/a:qemu:qemu
+Aggressive OS guesses: Oracle Virtualbox (96%), QEMU user mode network gateway (92%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_nbstat: NetBIOS name: NASHUA, NetBIOS user: <unknown>, NetBIOS MAC: 08:00:27:6b:81:11 (Oracle VirtualBox virtual NIC)
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2021-12-10T19:19:23
+|_  start_date: N/A
+
+Post-scan script results:
+| clock-skew: 
+|   0s: 
+|     10.0.1.6
+|     10.0.0.4
+|     10.0.0.5
+|_    10.0.1.5
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Dec 10 14:20:12 2021 -- 5 IP addresses (5 hosts up) scanned in 380.33 seconds
