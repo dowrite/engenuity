@@ -1,0 +1,15 @@
+---
+#- include: set-hostname.yml  # Not needed. We want to keep static names in our environment.
+- include: set-timezone.yml
+- include: windows-disable-defender.yml
+- include: windows-disable-uac.yml
+- include: windows-disable-poweroff.yml
+#- include: windows-posh-exec-bypass.yml
+
+- include: windows-add-smb-share.yml
+#- include: windows-enable-rdp.yml  # Not needed. Enabled by default
+- include: windows-enable-wdigest.yml
+- include: windows-allow-icmp.yml
+- include: windows-enable-ps-logging.yml
+- include: windows-enable-4688-cmd-line-audit.yml
+#- include: windows-security-configure-logging.yml

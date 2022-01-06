@@ -1,0 +1,9 @@
+---
+
+- name: Enable wdigest
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\Wdigest
+    name: UseLogonCredential
+    data: 1
+    type: dword
+    state: present

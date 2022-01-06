@@ -1,0 +1,13 @@
+- name: Create share folder
+  win_file:
+    path: C:\shares\data
+    state: directory
+
+- name: Add public share
+  ansible.windows.win_share:
+    name: data
+    description: top secret share
+    path: C:\shares\data
+    list: yes
+    full: Administrators
+    read: Users

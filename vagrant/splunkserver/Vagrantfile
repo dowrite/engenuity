@@ -1,0 +1,62 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "splunkserver" do |config|
+    VM_NAME= "splunkserver"
+    config.vm.box = "generic/ubuntu1804"
+    config.vm.hostname = "#{VM_NAME}"
+    config.vm.boot_timeout = 600
+    config.vm.network :public_network, ip: "10.0.1.12", bridge: "tap0"
+    config.vm.network "forwarded_port", guest: 8000, host: 8000, protocol: "tcp"
+    config.vm.network "forwarded_port", guest: 8089, host: 8089, protocol: "tcp"
+  
+    config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "../../ansible/splunk_server.yml"
+        ansible.config_file = "../../ansible/ansible.cfg"
+        ansible.compatibility_mode = "2.0"
+        ansible.extra_vars = {
+          ansible_python_interpreter: "/usr/bin/python3",
+          splunk_admin_password: 'I-l1ke-Attack-Range!',
+          splunk_url: 'https://download.splunk.com/products/splunk/releases/8.0.2/linux/splunk-8.0.2-a7f645ddaf91-Linux-x86_64.tgz',
+          splunk_binary: 'splunk-8.0.2-a7f645ddaf91-Linux-x86_64.tgz',
+          s3_bucket_url: 'https://attack-range-appbinaries.s3-us-west-2.amazonaws.com',
+          splunk_escu_app: 'DA-ESS-ContentUpdate-latest.tar.gz',
+          splunk_asx_app: 'Splunk_ASX-latest.tar.gz',
+          splunk_windows_ta: 'splunk-add-on-for-microsoft-windows_800.tgz',
+          splunk_cim_app: 'splunk-common-information-model-cim_4180.tgz',
+          splunk_sysmon_ta: 'splunk-add-on-for-microsoft-sysmon_1062.tgz',
+          caldera_password: 'I-l1ke-Attack-Range!',
+          splunk_mltk_app: 'splunk-machine-learning-toolkit_510.tgz',
+          splunk_bots_dataset: '1a,2a,3',
+          splunk_stream_app: 'splunk-stream_720.tgz',
+          splunk_python_app: 'python-for-scientific-computing-for-linux-64-bit_200.tgz',
+          install_es: '0',
+          install_mltk: '1',
+          splunk_es_app: 'splunk-enterprise-security_640.spl',
+          splunk_es_app_version: '',
+          phantom_app: 'phantom-app-for-splunk_305.tgz',
+          phantom_server: '0',
+          phantom_server_private_ip: '10.0.1.13',
+          phantom_admin_password: 'I-l1ke-Attack-Range!',
+          splunk_security_essentials_app: 'splunk-security-essentials_310.tgz',
+          punchard_custom_visualization: 'punchcard-custom-visualization_140.tgz',
+          status_indicator_custom_visualization: 'status-indicator-custom-visualization_140.tgz',
+          splunk_attack_range_dashboard: 'splunk_attack_range_reporting-1.0.5.tar.gz',
+          timeline_custom_visualization: 'timeline-custom-visualization_140.tgz',
+          install_mission_control: '',
+          mission_control_app: '',
+          install_dsp: '',
+          dsp_client_cert_path: '',
+          dsp_node: '',
+          splunk_server_private_ip: '10.0.1.12',
+          cloud_attack_range: '0'
+        }
+    end
+  
+    config.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.name = "#{VM_NAME}"
+      vb.customize ["modifyvm", :id, "--memory", 6144]
+      vb.customize ["modifyvm", :id, "--cpus", 4]
+    end
+  end
+  
+end

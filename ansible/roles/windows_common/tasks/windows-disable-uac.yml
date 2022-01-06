@@ -1,0 +1,10 @@
+---
+
+- name: Disable UAC
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system
+    name: EnableLUA
+    data: 0
+    type: dword
+    state: present
+  register: uac_result

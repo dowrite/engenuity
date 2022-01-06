@@ -1,0 +1,6 @@
+---
+
+# Remove Windows Lifecycle Management Server so it doesn't poweroff machine after 1hr
+- name: Remove WLMS
+  ansible.windows.win_powershell:
+    script: "{{ lookup('file', 'scripts/remove-wlms.ps1') }}"
