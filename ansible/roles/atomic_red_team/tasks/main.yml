@@ -1,10 +1,5 @@
 ---
 
-# - name: Check we have installed Atomic Red Team
-#   win_stat:
-#     path: 'C:\AtomicRedTeam'
-#   register: atr_folder
-
 - name: Enable strong dotnet crypto
   win_regedit:
     key: "{{ item }}"
@@ -32,13 +27,3 @@
     Install-AtomicRedTeam -Force
     IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicsfolder.ps1' -UseBasicParsing)
     Install-AtomicsFolder -Force
-
-- set_fact:
-    techniques: "{{ art_run_techniques.split(',') }}"
-
-- include_tasks: "run_art_test.yml"
-  with_items: "{{ techniques }}"
-  when: run_specific_atomic_tests == "False"
-
-- include_tasks: "run_specific_atomics.yml"
-  when: run_specific_atomic_tests == "True"
