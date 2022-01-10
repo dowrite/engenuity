@@ -11,4 +11,5 @@
     - windows_domain_client
     - windows_universal_forwarder
     - windows_caldera_agent
+    - atomic_red_team
     - sysmon

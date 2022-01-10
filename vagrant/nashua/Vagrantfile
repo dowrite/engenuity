@@ -10,7 +10,8 @@ Vagrant.configure("2") do |config|
     config.winrm.timeout = 300
     config.winrm.retry_limit = 20
     config.vm.network "forwarded_port", guest: 5985, host: 6016
-    config.vm.network :public_network, ip: "10.0.1.6", bridge: "tap0"
+    config.vm.network :public_network, ip: "10.0.1.6", bridge: "tap0" # tap0 is used as a virtual private router switch for testing 
+    config.vm.network "public_network" # Use during setup only, to provide internet access for downloading files
     config.vm.synced_folder '.', '/vagrant', disabled: true
   
     config.vm.provision "ansible" do |ansible|
@@ -44,6 +45,7 @@ Vagrant.configure("2") do |config|
       vb.name = "#{VM_NAME_WIN}"
       vb.customize ["modifyvm", :id, "--memory", 2048]
       vb.customize ["modifyvm", :id, "--cpus", 1]
+      vb.customize ["modifyvm", :id, "--hwvirtex", "off"]
       vb.customize ["modifyvm", :id, "--vram", "32"]
       vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
