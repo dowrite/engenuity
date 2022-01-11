@@ -1,0 +1,3 @@
+# Untracked vagrant files
+.vagrant
+*.box
