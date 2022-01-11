@@ -1,0 +1,30 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "internet" do |config|
+    VM_NAME= "internet"
+    config.vm.box = "ubuntu/hirsute64"
+    config.vm.box_check_update = false
+    config.vm.boot_timeout = 600
+    config.vm.hostname = "#{VM_NAME}"
+    config.vm.network "public_network", ip: "192.168.0.5", bridge: "tap0"
+    config.vm.network "forwarded_port", guest: 22, host: 2222
+
+    config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "../../ansible/internet.yml"
+        ansible.config_file = "../../ansible/ansible.cfg"
+        ansible.compatibility_mode = "2.0"
+        ansible.extra_vars = {
+          ansible_python_interpreter: "/usr/bin/python3"
+        }
+    end
+
+
+    config.vm.provider "virtualbox" do |vb, override|
+      vb.gui = true
+      vb.name = "#{VM_NAME}"
+      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--cpus", 1]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    end
+  end
+
+end
