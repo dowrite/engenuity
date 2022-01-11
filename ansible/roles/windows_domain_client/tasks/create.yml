@@ -1,12 +1,11 @@
 ---
 
-- name: Change dns server to domain controller
+- name: Set DC as dns server. Backup DNS - 8.8.8.8
   win_dns_client:
     adapter_names: "{{ ansible_interfaces.0.connection_name }}"
-    ipv4_addresses: "{{ windows_domain_controller_private_ip }}"
-
-- name: reboot | Rebooting Server
-  win_reboot:
+    ipv4_addresses: 
+      - "{{ windows_domain_controller_private_ip }}"
+      - 8.8.8.8
 
 - pause:
     minutes: 3
