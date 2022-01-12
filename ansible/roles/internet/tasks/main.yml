@@ -20,5 +20,16 @@
 - name: Download & extract Atomic Red Team
   ansible.builtin.unarchive:
     src: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip"
-    dest: /usr/local/bin
+    dest:  ~/.local
     remote_src: yes
+
+- name: Create URL list of Atomic Red Team resources
+  shell: "grep -Eo '(http|https)://[^/"]+' | sort -u"
+  args:
+    chdir: " ~/.local/atomic-red-team-master/atomics"
+  register: grep_output
+  ignore_errors: true
+
+- debug:
+    var: grep_output.stdout_lines
+  when: grep_output.stdout != "
