@@ -1,7 +1,24 @@
 ---
 
+# - name: copy commands.rc to kali linux
+#   copy:
+#     src: commands.rc
+#     dest: /var/www/commands.rc
 
-- include: setup.yml
-  when:
-    - run_demo == "1"
-    - demo_scenario == "mission_control_malicious_putty"
+
+# - name: copy attack.service to kali linux
+#   copy:
+#     src: attack.service
+#     dest: /etc/systemd/system/attack.service
+#     mode: '0644'
+#   become: yes
+
+- name: install pip
+  apt: 
+    pkg: python3-pip
+
+- name: Download & extract Atomic Red Team
+  ansible.builtin.unarchive:
+    src: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip"
+    dest: /usr/local/bin
+    remote_src: yes
