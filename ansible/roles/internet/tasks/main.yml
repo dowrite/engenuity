@@ -6,30 +6,55 @@
 #     dest: /var/www/commands.rc
 
 
-# - name: copy attack.service to kali linux
-#   copy:
-#     src: attack.service
-#     dest: /etc/systemd/system/attack.service
-#     mode: '0644'
-#   become: yes
 
 - name: install pip
   apt: 
     pkg: python3-pip
+    pkg: unzip
+ 
+
+- name: Create ART_archive directory path
+  file:
+    path: ~/.local/ART_archive
+    state: directory
+
+
 
 - name: Download & extract Atomic Red Team
   ansible.builtin.unarchive:
-    src: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip"
+    src: "https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip"
     dest:  ~/.local
     remote_src: yes
+    
+- name: Wait for extraction
+  wait_for:
+    path: ~/.local/atomic-red-team-master/atomics
+    state: present
+    msg: Timeout to waiting for path ~/.local/atomic-red-team-master/atomics
 
-- name: Create URL list of Atomic Red Team resources
-  shell: "grep -Eo '(http|https)://[^/"]+' | sort -u"
+- name: Create URL list of Atomic Red Team resource
+  shell: "grep -Eoh 'https://[a-zA-Z0-9./?=_%:-]*' */*.yaml | sort -u | sed 's/[^[:alnum:]]$//' "
   args:
-    chdir: " ~/.local/atomic-red-team-master/atomics"
+    chdir: "~/.local/atomic-red-team-master/atomics"
   register: grep_output
   ignore_errors: true
 
 - debug:
-    var: grep_output.stdout_lines
-  when: grep_output.stdout != "
+    var: grep_output.stdout_lines[-10:]
+  when: grep_output.stdout != ""
+
+- name: Create directories 
+  file: path=~/.local/ART_archive/{{ (item.split('://')[1]).split('/')[:-1] | join('/') }} state=directory
+  with_items: "{{ grep_output.stdout_lines | list }}"
+  when: "{{ item.split('://')[1] is defined }}"
+
+- name: Pull ART resources
+  get_url:
+    url: "{{ item }}"
+    dest: "~/.local/ART_archive/{{ item.split('://')[1] }}"
+  with_items: "{{ grep_output.stdout_lines | list }}"
+  when: "{{ item.split('://')[1] is defined }}"
+  ignore_errors: true
+
+
+
