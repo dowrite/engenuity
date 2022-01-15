@@ -1,0 +1,32 @@
+---
+
+
+- name: Download & extract DNSChef
+  ansible.builtin.unarchive:
+    src: "https://github.com/iphelix/dnschef/archive/refs/heads/master.zip"
+    dest:  "{{ tools_dir }}"
+    remote_src: yes
+
+- name: Add DNSChef dir to system-wide $PATH.
+  copy:
+    dest: /etc/profile.d/custom-path.sh
+    content: 'PATH=$PATH:{{ dnschef_rootdir }}'
+
+- name: Install dnschef pip requirements
+  pip:
+    requirements: "{{ dnschef_rootdir }}/requirements.txt"
+
+- name: configure name servers
+  net_system:
+    name_servers:
+      - "{{ vm_ip }}"
+
+- name: Create dnschef daemon
+  template:
+    src: "files/init.d-template.j2"
+    dest: "/etc/init.d/dnschef"
+    mode: 0751
+  vars: 
+
+- name: Ensure my dnschef is started
+    action: service name=dnschef state=started

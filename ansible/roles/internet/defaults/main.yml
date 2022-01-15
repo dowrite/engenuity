@@ -1,0 +1,22 @@
+---
+
+tools_dir: /var/opt
+dnschef_rootdir: /var/opt/dnschef-master
+
+# Apache defaults
+app_user: "vagrant"
+http_host: "internet"
+http_conf: "internet.conf"
+http_port: "80"
+https_port: 443
+document_root: "/var/www"
+virt_docroot: /usr/local/apache/vhosts
+apache_log_dir: /var/log/apache2
+
+# Certificate defaults
+cert_dir: /etc/ssl/crt
+privatekey_dir: /etc/ssl/private
+csr_dir: /etc/ssl/csr
+
+# Atomic Red Team defaults
+atomic_git_link: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip

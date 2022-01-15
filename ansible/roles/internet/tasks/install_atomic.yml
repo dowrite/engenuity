@@ -1,0 +1,66 @@
+---
+
+# Install latest Atomic Red Team from github
+
+- name: Create .local directory 
+  file:
+    path: ~/.local
+    state: directory
+
+- name: Download & extract Atomic Red Team
+  ansible.builtin.unarchive:
+    src: "{{ atomic_git_link }}"
+    dest:  ~/.local
+    remote_src: yes
+    
+- name: Wait for extraction
+  wait_for:
+    path: ~/.local/atomic-red-team-master/atomics
+    state: present
+    msg: Timeout to waiting for path ~/.local/atomic-red-team-master/atomics
+
+# Create a local repo of all ART resource which the atomics will use during execution of a technique
+# Normally, these resources are pulled from the internet during execution.
+# Since we don't have internet access, we need to redirect calls to the internet into this local repo
+- name: Create URL list of Atomic Red Team resource
+  shell: "grep -Eoh 'https://[a-zA-Z0-9./?=_%:-]*' */*.yaml | sort -u | sed 's/[^[:alnum:]]$//' "
+  args:
+    chdir: "~/.local/atomic-red-team-master/atomics"
+  register: grep_output
+  ignore_errors: true
+
+- debug:
+    var: grep_output.stdout_lines[-10:]
+  when: grep_output.stdout != ""
+
+- name: Create directories 
+  file: path={{ document_root }}/{{ (item.split('://')[1]).split('/')[:-1] | join('/') }} state=directory
+  with_items: 
+    - "{{ atomic_git_link }}"
+    - "{{ grep_output.stdout_lines | list }}"
+  when: "{{ item.split('://')[1] is defined }}"
+
+- name: Pull ART resources
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ document_root }}/{{ item.split('://')[1] }}"
+  with_items: "{{ grep_output.stdout_lines | list }}"
+  when: "{{ item.split('://')[1] is defined }}"
+  ignore_errors: true
+
+- name: Find atomics yaml files
+  shell: "find $(pwd) -name *.yaml"
+  args:
+    chdir: "~/.local/atomic-red-team-master/atomics"
+  register: find_output
+
+- debug:
+    var: find_output.stdout_lines[-5:]
+  when: find_output.stdout != ""
+
+- name: Make atomics use http
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: 'https://'
+    replace: 'http://'
+  with_items: "{{ find_output.stdout_lines }}"

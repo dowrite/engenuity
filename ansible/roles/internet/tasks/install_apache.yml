@@ -1,0 +1,69 @@
+---
+
+
+- name: Install Apache
+  apt: 
+    pkg:
+      - apache2
+      - openssl
+    cache_valid_time: 86400
+    state: latest
+
+- name: Create document root
+  file:
+    path: "{{ document_root }}/{{ http_host }}"
+    state: directory
+    mode: '0755'
+    
+
+- name: Enable rewrite module
+  apache2_module: name=rewrite state=present
+  notify: Reload Apache
+
+- name: Enable ssl module
+  apache2_module: name=ssl state=present
+  notify: Reload Apache
+
+- name: Create certificate directories
+  file: path={{item}} state=directory
+  loop: 
+    - "{{ cert_dir }}"
+    - "{{ privatekey_dir }}"
+    - "{{ csr_dir }}"
+
+- name: Upload private key
+  template:
+    src: "files/{{ http_host }}.pem"
+    dest: "{{ privatekey_dir }}/{{ http_host }}.pem"
+
+- name: Upload Certificate Signing Request
+  template:
+    src: "files/{{ http_host }}.csr"
+    dest: "{{ csr_dir }}/{{ http_host }}.csr"
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ cert_dir }}/{{ http_host }}.crt"
+    privatekey_path: "{{ privatekey_dir }}/{{ http_host }}.pem"
+    csr_path: "{{ csr_dir }}/{{ http_host }}.csr"
+    provider: selfsigned
+
+- name: Enable vhost_alias module
+  apache2_module: name=vhost_alias state=present
+  notify: Reload Apache
+
+- name: Set up apache virtuahHost
+  template:
+    src: "files/apache.conf.j2"
+    dest: "/etc/apache2/sites-available/{{ http_conf }}"
+
+- name: Disable default Apache site
+  shell: /usr/sbin/a2dissite 000-default.conf
+  when: disable_default
+  notify: Reload Apache
+
+- name: Enable new site
+  shell: /usr/sbin/a2ensite {{ http_conf }}
+  notify: Reload Apache
+
+

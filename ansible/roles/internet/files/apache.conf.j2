@@ -1,0 +1,27 @@
+<VirtualHost *:{{ http_port }}>
+    UseCanonicalName    Off
+    VirtualDocumentRoot "{{ document_root }}/%0"
+    ServerAdmin webmaster@localhost
+    ServerName {{ http_host }}
+    ServerAlias www.{{ http_host }}    
+    DocumentRoot {{ document_root }}/{{ http_host }}
+    ErrorLog {{ apache_log_dir }}/error.log
+    CustomLog {{ apache_log_dir }}/access.log combined
+</VirtualHost>
+<VirtualHost *:{{ https_port }}>
+    UseCanonicalName    Off
+    VirtualDocumentRoot "{{ document_root }}/%0"
+    ServerAdmin webmaster@localhost
+    ServerName {{ http_host }}
+    ServerAlias www.{{ http_host }}    
+    DocumentRoot {{ document_root }}/{{ http_host }}
+
+    SSLEngine on
+    SSLCertificateFile      {{ cert_dir }}/{{ http_host }}.crt
+    SSLCertificateKeyFile   {{ privatekey_dir }}/{{ http_host }}.pem
+    
+    ErrorLog {{ apache_log_dir }}/error.log
+    CustomLog {{ apache_log_dir }}/access.log combined
+
+
+</VirtualHost>

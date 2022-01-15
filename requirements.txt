@@ -1,0 +1,8 @@
+ansible
+ansible-runner
+Jinja2
+python-vagrant
+pywinrm
+PyYAML
+splunk-sdk
+tabulate
