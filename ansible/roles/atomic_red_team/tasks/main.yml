@@ -20,14 +20,15 @@
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
   when: providers.stdout is not search("NuGet")
 
-# Note the insecure http links below. 
-# When this runs inside CCPaaS, it will pull from our local "internet", which doesn't support HTTPS
+# Note the modified links below. 
+# When this runs inside CCPaaS, it will pull from our S3 bucket instead of from the internet
+# Original link: http://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1
 - name: Install Atomic Red Team
   win_shell: |
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
-    IEX (IWR http://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1)
+    IEX (IWR http://10.0.2.2/sar/raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1)
     Install-AtomicRedTeam -Force
-    IEX (IWR 'http://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicsfolder.ps1' -UseBasicParsing)
+    IEX (IWR 'http://10.0.2.2/sar/raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicsfolder.ps1' -UseBasicParsing)
     Install-AtomicsFolder -Force
 
 - set_fact:

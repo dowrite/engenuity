@@ -20,3 +20,4 @@ csr_dir: /etc/ssl/csr
 
 # Atomic Red Team defaults
 atomic_git_link: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip
+repo_local: /home/vagrant/.local

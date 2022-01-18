@@ -4,20 +4,20 @@
 
 - name: Create .local directory 
   file:
-    path: ~/.local
+    path: "{{repo_local}}"
     state: directory
 
 - name: Download & extract Atomic Red Team
   ansible.builtin.unarchive:
     src: "{{ atomic_git_link }}"
-    dest:  ~/.local
+    dest: "{{repo_local}}"
     remote_src: yes
     
 - name: Wait for extraction
   wait_for:
-    path: ~/.local/atomic-red-team-master/atomics
+    path: "{{repo_local}}/atomic-red-team-master/atomics"
     state: present
-    msg: Timeout to waiting for path ~/.local/atomic-red-team-master/atomics
+    msg: Timeout to waiting for path {{repo_local}}/atomic-red-team-master/atomics
 
 # Create a local repo of all ART resource which the atomics will use during execution of a technique
 # Normally, these resources are pulled from the internet during execution.
@@ -25,7 +25,7 @@
 - name: Create URL list of Atomic Red Team resource
   shell: "grep -Eoh 'https://[a-zA-Z0-9./?=_%:-]*' */*.yaml | sort -u | sed 's/[^[:alnum:]]$//' "
   args:
-    chdir: "~/.local/atomic-red-team-master/atomics"
+    chdir: "{{repo_local}}/atomic-red-team-master/atomics"
   register: grep_output
   ignore_errors: true
 
@@ -38,29 +38,43 @@
   with_items: 
     - "{{ atomic_git_link }}"
     - "{{ grep_output.stdout_lines | list }}"
-  when: "{{ item.split('://')[1] is defined }}"
+  when: item.split('://')[1] is defined
 
 - name: Pull ART resources
   get_url:
     url: "{{ item }}"
     dest: "{{ document_root }}/{{ item.split('://')[1] }}"
   with_items: "{{ grep_output.stdout_lines | list }}"
-  when: "{{ item.split('://')[1] is defined }}"
+  when: item.split('://')[1] is defined
   ignore_errors: true
 
 - name: Find atomics yaml files
   shell: "find $(pwd) -name *.yaml"
   args:
-    chdir: "~/.local/atomic-red-team-master/atomics"
+    chdir: "{{repo_local}}/atomic-red-team-master/atomics"
   register: find_output
 
 - debug:
     var: find_output.stdout_lines[-5:]
   when: find_output.stdout != ""
 
-- name: Make atomics use http
+- name: Make atomics point their web requests to our S3 bucket
   ansible.builtin.replace:
     path: "{{ item }}"
     regexp: 'https://'
-    replace: 'http://'
+    replace: 'http://10.0.2.2/sar/www/'
   with_items: "{{ find_output.stdout_lines }}"
+
+- name: Zip modified ART repo and replace 
+  community.general.archive: 
+    path: "{{repo_local}}/atomic-red-team-master"
+    dest: "{{ document_root }}/{{ atomic_git_link.split('://')[1] }}"
+
+### MANUAL step! ###
+### Copy internet:/var/www/* to S3
+# On dev box: $ vagrant scp internet:/var/www ~/www
+# On dev box: Upload ~/www to S3 bucket via browser
+
+### MANUAL step! ###
+### Copy engenuity/ansible to S3
+# On dev box: Upload engenuity/ansible to S3 bucket via browser

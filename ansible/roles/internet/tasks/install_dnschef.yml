@@ -26,7 +26,6 @@
     src: "files/init.d-template.j2"
     dest: "/etc/init.d/dnschef"
     mode: 0751
-  vars: 
 
 - name: Ensure my dnschef is started
     action: service name=dnschef state=started
