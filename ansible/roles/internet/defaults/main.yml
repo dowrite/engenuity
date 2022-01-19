@@ -22,4 +22,5 @@ csr_dir: /etc/ssl/csr
 atomic_git_link: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip
 invoke_atomic_git_link: https://github.com/redcanaryco/invoke-atomicredteam/archive/refs/heads/master.zip
 invoke_atomic_raw_link: https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master
+invoke_atomic_raw_path: "{{ document_root }}/{{ invoke_atomic_raw_link.split('://')[1] }}"
 repo_local: /home/vagrant/.local
