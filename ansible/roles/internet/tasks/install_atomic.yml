@@ -1,74 +1,76 @@
 ---
 
-# Install latest Atomic Red Team from github
+# # Install latest Atomic Red Team from github
 
-- name: Create .local directory 
-  file:
-    path: "{{repo_local}}"
-    state: directory
+# - name: Create .local directory 
+#   file:
+#     path: "{{repo_local}}"
+#     state: directory
 
-- name: Download & extract Atomic Red Team
-  ansible.builtin.unarchive:
-    src: "{{ atomic_git_link }}"
-    dest: "{{repo_local}}"
-    remote_src: yes
+# - name: Download & extract Atomic Red Team
+#   ansible.builtin.unarchive:
+#     src: "{{ atomic_git_link }}"
+#     dest: "{{repo_local}}"
+#     remote_src: yes
     
-- name: Wait for extraction
-  wait_for:
-    path: "{{repo_local}}/atomic-red-team-master/atomics"
-    state: present
-    msg: Timeout to waiting for path {{repo_local}}/atomic-red-team-master/atomics
+# - name: Wait for extraction
+#   wait_for:
+#     path: "{{repo_local}}/atomic-red-team-master/atomics"
+#     state: present
+#     msg: Timeout to waiting for path {{repo_local}}/atomic-red-team-master/atomics
 
-# Create a local repo of all ART resource which the atomics will use during execution of a technique
-# Normally, these resources are pulled from the internet during execution.
-# Since we don't have internet access, we need to redirect calls to the internet into this local repo
-- name: Create URL list of Atomic Red Team resource
-  shell: "grep -Eoh 'https://[a-zA-Z0-9./?=_%:-]*' */*.yaml | sort -u | sed 's/[^[:alnum:]]$//' "
-  args:
-    chdir: "{{repo_local}}/atomic-red-team-master/atomics"
-  register: grep_output
-  ignore_errors: true
+# # Create a local repo of all ART resource which the atomics will use during execution of a technique
+# # Normally, these resources are pulled from the internet during execution.
+# # Since we don't have internet access, we need to redirect calls to the internet into this local repo
+# - name: Create URL list of Atomic Red Team resource
+#   shell: "grep -Eoh 'https://[a-zA-Z0-9./?=_%:-]*' */*.yaml | sort -u | sed 's/[^[:alnum:]]$//' "
+#   args:
+#     chdir: "{{repo_local}}/atomic-red-team-master/atomics"
+#   register: grep_output
+#   ignore_errors: true
 
-- debug:
-    var: grep_output.stdout_lines[-10:]
-  when: grep_output.stdout != ""
+# - debug:
+#     var: grep_output.stdout_lines[-10:]
+#   when: grep_output.stdout != ""
 
-- name: Create directories 
-  file: path={{ document_root }}/{{ (item.split('://')[1]).split('/')[:-1] | join('/') }} state=directory
-  with_items: 
-    - "{{ atomic_git_link }}"
-    - "{{ grep_output.stdout_lines | list }}"
-  when: item.split('://')[1] is defined
+# - name: Create directories 
+#   file: path={{ document_root }}/{{ (item.split('://')[1]).split('/')[:-1] | join('/') }} state=directory
+#   with_items: 
+#     - "{{ grep_output.stdout_lines | list }}"
+#     - "{{ atomic_git_link }}"
+#     - "{{ invoke_atomic_git_link }}"
+#     - "{{ invoke_atomic_raw_link }}"
+#   when: item.split('://')[1] is defined
 
-- name: Pull ART resources
-  get_url:
-    url: "{{ item }}"
-    dest: "{{ document_root }}/{{ item.split('://')[1] }}"
-  with_items: "{{ grep_output.stdout_lines | list }}"
-  when: item.split('://')[1] is defined
-  ignore_errors: true
+# - name: Stage ART resources (1 of 2) - URLs from Atomics
+#   get_url:
+#     url: "{{ item }}"
+#     dest: "{{ document_root }}/{{ item.split('://')[1] }}"
+#   with_items: "{{ grep_output.stdout_lines | list }}"
+#   when: item.split('://')[1] is defined
+#   ignore_errors: true
 
-- name: Find atomics yaml files
-  shell: "find $(pwd) -name *.yaml"
-  args:
-    chdir: "{{repo_local}}/atomic-red-team-master/atomics"
-  register: find_output
+# - name: Find atomics yaml files
+#   shell: "find $(pwd) -name *.yaml"
+#   args:
+#     chdir: "{{repo_local}}/atomic-red-team-master/atomics"
+#   register: find_output
 
-- debug:
-    var: find_output.stdout_lines[-5:]
-  when: find_output.stdout != ""
+# - debug:
+#     var: find_output.stdout_lines[-5:]
+#   when: find_output.stdout != ""
 
-- name: Make atomics point their web requests to our S3 bucket
-  ansible.builtin.replace:
-    path: "{{ item }}"
-    regexp: 'https://'
-    replace: 'http://10.0.2.2/sar/www/'
-  with_items: "{{ find_output.stdout_lines }}"
+# - name: Make atomics point their web requests to our S3 bucket
+#   ansible.builtin.replace:
+#     path: "{{ item }}"
+#     regexp: 'https://'
+#     replace: 'http://10.0.2.2/sar/www/'
+#   with_items: "{{ find_output.stdout_lines }}"
 
-- name: Zip modified ART repo and replace 
-  community.general.archive: 
-    path: "{{repo_local}}/atomic-red-team-master"
-    dest: "{{ document_root }}/{{ atomic_git_link.split('://')[1] }}"
+# - name: Zip modified ART repo and replace 
+#   community.general.archive: 
+#     path: "{{repo_local}}/atomic-red-team-master"
+#     dest: "{{ document_root }}/{{ atomic_git_link.split('://')[1] }}"
 
 ### MANUAL step! ###
 ### Copy internet:/var/www/* to S3
@@ -78,3 +80,36 @@
 ### MANUAL step! ###
 ### Copy engenuity/ansible to S3
 # On dev box: Upload engenuity/ansible to S3 bucket via browser
+
+
+
+- name: Stage ART resources (2 of 2) - Invoke Atomic Raw resources
+
+- name: Download & extract Invoke Atomic Red Team
+  ansible.builtin.unarchive:
+    src: "{{ invoke_atomic_git_link }}"
+    dest: "{{ {{ invoke_atomic_raw_path }}.split('/')[:-1] | join('/') }}"
+    remote_src: yes
+    
+- name: Wait for extraction
+  wait_for:
+    path: "{{ invoke_atomic_raw_path }}"
+    state: present
+    msg: Timeout to waiting for path {{ invoke_atomic_raw_path }}/master
+
+- name: Find atomics ps1 files
+  shell: "find $(pwd) -name *.ps1"
+  args:
+    chdir: "{{ invoke_atomic_raw_path }}"
+  register: find_output
+
+- debug:
+    var: find_output.stdout_lines[-5:]
+  when: find_output.stdout != ""
+
+- name: Make web links point to our S3 bucket
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: 'https://'
+    replace: 'http://10.0.2.2/sar/www/'
+  with_items: "{{ find_output.stdout_lines }}"
