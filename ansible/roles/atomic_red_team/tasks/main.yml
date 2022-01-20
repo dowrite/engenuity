@@ -27,9 +27,10 @@
   win_shell: |
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
     IEX (IWR http://10.0.2.2/sar/www/raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1)
-    Install-AtomicRedTeam -Force
+    Install-AtomicRedTeam
     IEX (IWR 'http://10.0.2.2/sar/www/raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicsfolder.ps1' -UseBasicParsing)
-    Install-AtomicsFolder -Force
+    Install-AtomicsFolder
+  when: art_run_techniques != ""
 
 - set_fact:
     techniques: "{{ art_run_techniques.split(',') }}"

@@ -19,8 +19,8 @@ privatekey_dir: /etc/ssl/private
 csr_dir: /etc/ssl/csr
 
 # Atomic Red Team defaults
-atomic_git_link: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip
-invoke_atomic_git_link: https://github.com/redcanaryco/invoke-atomicredteam/archive/refs/heads/master.zip
+atomic_git_link: https://github.com/redcanaryco/atomic-red-team/archive/master.zip
+invoke_atomic_git_link: https://github.com/redcanaryco/invoke-atomicredteam/archive/master.zip
 invoke_atomic_raw_link: https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master
-invoke_atomic_raw_path: "{{ document_root }}/{{ invoke_atomic_raw_link.split('://')[1] }}"
+invoke_atomic_raw_path: "/var/www/raw.githubusercontent.com/redcanaryco/invoke-atomicredteam"
 repo_local: /home/vagrant/.local
