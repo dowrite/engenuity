@@ -72,17 +72,6 @@
     dest: "{{ document_root }}/{{ atomic_git_link.split('://')[1] }}"
     format: zip
 
-### MANUAL step! ###
-### Copy internet:/var/www/* to S3
-# On dev box: $ vagrant scp internet:/var/www ~/www
-# On dev box: Upload ~/www to S3 bucket via browser
-
-### MANUAL step! ###
-### Copy engenuity/ansible to S3
-# On dev box: Upload engenuity/ansible to S3 bucket via browser
-
-
-
 ### Stage ART resources (2 of 2) - Invoke Atomic Raw resources
 
 - name: Download & extract Invoke Atomic Red Team
@@ -133,3 +122,12 @@
 
 - debug:
     var: archive_output
+
+### MANUAL step! ###
+### Copy internet:/var/www/* to S3://sar/www
+# On dev box: $ vagrant scp internet:/var/www ~/www
+# On dev box: Upload ~/www to S3 bucket via browser
+
+### MANUAL step! ###
+### Copy engenuity/ansible to S3://sar/ansible
+# On dev box: Upload engenuity/ansible to S3 bucket via browser
