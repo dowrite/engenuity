@@ -1,0 +1,30 @@
+---
+
+
+- name: Check if nmapscan is already installed
+  ansible.builtin.stat:
+    path: /opt/nmapscan/nmap
+  register: st
+
+- when: st.stat.exists != true
+  block:
+    - name: Create nmapscan directory 
+      file:
+        path: /opt/nmapscan
+        state: directory
+
+    - name: Download & extract
+      ansible.builtin.unarchive:
+        src: "https://github.com/tedsluis/nmap/archive/master.zip"
+        dest: "/opt/nmapscan"
+        remote_src: yes
+
+    - name: Rename /opt/nmapscan/nmap-master to /opt/nmapscan/nmap
+      command: mv -rf /opt/nmapscan/nmap-master /opt/nmapscan/nmap
+      when: st.stat.exists == true
+
+    - name: Get go.js 
+      get_url:
+        url: https://cdnjs.cloudflare.com/ajax/libs/gojs/1.8.37/go.js
+        dest: /opt/nmapscan/nmap
+

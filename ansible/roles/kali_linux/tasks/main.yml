@@ -1,7 +1,11 @@
 ---
 
 
+- include: install_nmapscan.yml
+- include: install_xrdp.yml
+
 - include: setup.yml
   when:
     - run_demo == "1"
     - demo_scenario == "mission_control_malicious_putty"
+

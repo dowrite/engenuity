@@ -39,8 +39,11 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb, override|
       vb.gui = true
       vb.name = "#{VM_NAME_WIN_DC}"
-      vb.customize ["modifyvm", :id, "--memory", 2048]
+      vb.customize ["modifyvm", :id, "--memory", 4096]
       vb.customize ["modifyvm", :id, "--cpus", 1]
+      # Disable some virtualization options that are causing issues in VirtualBox
+      vb.customize ["modifyvm", :id, "--pae", "off"] # Physical Address Extension - only needed for 32-bit guest OS
+      vb.customize ["modifyvm", :id, "--nestedpaging", "off"]
       vb.customize ["modifyvm", :id, "--vram", "32"]
       vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]

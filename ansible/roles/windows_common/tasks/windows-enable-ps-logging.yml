@@ -15,6 +15,3 @@
     value: EnableScriptBlockInvocationLogging
     datatype: dword
     data: 1
-
-- name: restart machine
-  win_reboot:

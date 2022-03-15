@@ -1,0 +1,21 @@
+---
+
+- name: Install xrdp
+  apt: 
+    pkg:
+      - xrdp
+    cache_valid_time: 86400
+    state: latest
+
+- name: Enable xrdp
+  service:
+    name: xrdp
+    enabled: yes
+
+# - name: Disable compositor to improve RDP performance in browser
+#   command: xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s true
+
+- name: Start xrdp
+  service:
+    name: xrdp
+    state: started
