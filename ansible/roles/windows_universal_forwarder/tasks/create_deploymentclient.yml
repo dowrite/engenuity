@@ -1,5 +1,5 @@
 
-- name: Create folder directory for deplyment client configuration
+- name: Create folder directory for deployment client configuration
   win_file:
     path: "{{ item }}"
     state: directory

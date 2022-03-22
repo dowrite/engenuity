@@ -1,0 +1,11 @@
+---
+
+- name: Check installed providers
+  win_shell: Get-PackageProvider
+  register: providers
+  changed_when: false
+  
+- name: Install NuGet Provider
+  win_shell: |
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+  when: providers.stdout is not search("NuGet")

@@ -15,6 +15,7 @@
   register: providers
   changed_when: false
 
+# This line will fail in CCPaaS if NuGet is not already installed!
 - name: Install NuGet Provider
   win_shell: |
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
