@@ -1,5 +1,5 @@
 
-- name: Nslooup splunk.common
+- name: Nslookup splunk.com
   win_command: 'nslookup download.splunk.com'
   register: output
 
