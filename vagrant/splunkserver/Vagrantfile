@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
     config.vm.box = "generic/ubuntu1804"
     config.vm.hostname = "#{VM_NAME}"
     config.vm.boot_timeout = 600
-    config.vm.network :public_network, ip: "10.0.1.12", bridge: "tap0"
+    config.vm.network :public_network, ip: "10.0.0.23", bridge: "tap0"
     config.vm.network "forwarded_port", guest: 8000, host: 8000, protocol: "tcp"
     config.vm.network "forwarded_port", guest: 8089, host: 8089, protocol: "tcp"
   
