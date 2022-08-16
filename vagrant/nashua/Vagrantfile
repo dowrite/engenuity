@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
     config.winrm.timeout = 300
     config.winrm.retry_limit = 20
     config.vm.network "forwarded_port", guest: 5985, host: 6016
-    config.vm.network :public_network, ip: "10.0.1.6", bridge: "tap0" # tap0 is used as a virtual private switch for testing
+    config.vm.network :public_network, ip: "10.0.1.6", bridge: "br0"
   
     config.vm.provision "ansible" do |ansible|
         ansible.extra_vars = {
@@ -28,6 +28,10 @@ Vagrant.configure("2") do |config|
           splunk_admin_password: 'I-l1ke-Attack-Range!',
           windows_server_join_domain: '1',
           windows_domain_controller_private_ip: '10.0.0.4',
+          run_demo: '0',
+          demo_scenario: '',
+          capture_attack_data: '',
+          art_run_techniques: '',
           win_timezone: 'UTC'
         }
         ansible.playbook = "../../ansible/windows_workstation.yml"
@@ -38,7 +42,7 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb, override|
       vb.gui = true
       vb.name = "#{VM_NAME_WIN}"
-      vb.customize ["modifyvm", :id, "--memory", 8192]
+      vb.customize ["modifyvm", :id, "--memory", 4096]
       vb.customize ["modifyvm", :id, "--cpus", 1]
       # vb.customize ["modifyvm", :id, "--nestedpaging", "off"]
       vb.customize ["modifyvm", :id, "--vram", "32"]
