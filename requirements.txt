@@ -6,3 +6,4 @@ pywinrm
 PyYAML
 splunk-sdk
 tabulate
+pandas
